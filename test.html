@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="test.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#searchBtn").on("click", function () {
+                $.getJSON("http://universities.hipolabs.com/search?country=" + $("#cnty").val(),
+                    function (data) {
+                        data.forEach(item => {
+                            var template = "<article class='card'><h5>College Name : " +
+                                item.name + "</h5><br/><h6><a href='" + item.domains[0] +
+                                "'>Link</a></h6><button class='downloadBtn'>Download</button></article>"
+                            $("#uni").append(template);
+                        });
+                        const prov = [...new Set(data.map(univ => univ["state-province"]).filter(
+                            Boolean))];
+                        var stateProvince = ""
+                        prov.forEach(function (item) {
+                            if (item != null) {
+                                stateProvince += "<option value=" + item + ">" + item +
+                                    "</option>";
+                            } else {
+                                alert(item);
+                            }
+                        });
+                        document.getElementById("stateDropdown").innerHTML =
+                            "<option value=''>Select State/Province</option>" + stateProvince;
+                    });
+            });
+            $("#stateDropdown").on("change", function () {
+                const province = $(this).val();
+                const country = $("#cnty").val();
+                $.getJSON(`https://universities.hipolabs.com/search?country=${country}`, function (
+                    data) {
+                    const filteredData = data.filter(univ => univ["state-province"] ===
+                        province);
+                    const cards = filteredData.map(univ =>
+                        `<div class="card"><h3>${univ.name}</h3><a href="${univ.web_pages[0]}" target="_blank">${univ.web_pages[0]}</a></div>`
+                    );
+                    $("#universityCards").html(cards.join(""));
+                });
+            });
+            $(document).on("click", ".downloadBtn", function () {
+                const card = $(this).parent()[0];
+                html2canvas(card).then(canvas => {
+                    const link = document.createElement("a");
+                    link.download = "university-card.jpeg";
+                    link.href = canvas.toDataURL("image/jpeg");
+                    link.click();
+                });
+            });
+
+        });
+    </script>
+
+    <title>Testing API</title>
+</head>
+
+<body>
+    Enter name of the country : <input type="text" placeholder="Enter Country" id="cnty" required />
+    <button id="searchBtn">Search</button>
+    <select id="stateDropdown">
+        <option value="">Select State/Province</option>
+    </select>
+    <div id="universityCards">
+        <div id="uni"></div>
+    </div>
+</body>
+
+</html>
