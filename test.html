@@ -42,7 +42,7 @@
                     const filteredData = data.filter(univ => univ["state-province"] ===
                         province);
                     const cards = filteredData.map(univ =>
-                        `<div class="card"><h3>${univ.name}</h3><a href="${univ.web_pages[0]}" target="_blank">${univ.web_pages[0]}</a></div>`
+                        `<div class="card"><h3>${univ.name}</h3><a href="${univ.web_pages[0]}" target="_blank">${univ.web_pages[0]}</a><button class='downloadBtn'>Download</button></div>`
                     );
                     $("#universityCards").html(cards.join(""));
                 });
