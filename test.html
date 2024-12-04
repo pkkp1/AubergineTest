@@ -11,7 +11,11 @@
     <script type="text/javascript">
         $(function () {
             $("#searchBtn").on("click", function () {
-                $.getJSON("http://universities.hipolabs.com/search?country=" + $("#cnty").val(),
+                if($("#cnty").val()==""){
+                    alert("Country cannot be blank.");
+                }
+                else{
+                    $.getJSON("http://universities.hipolabs.com/search?country=" + $("#cnty").val(),
                     function (data) {
                         data.forEach(item => {
                             var template = "<article class='card'><h5>College Name : " +
@@ -33,6 +37,8 @@
                         document.getElementById("stateDropdown").innerHTML =
                             "<option value=''>Select State/Province</option>" + stateProvince;
                     });
+                }
+                
             });
             $("#stateDropdown").on("change", function () {
                 const province = $(this).val();
@@ -55,8 +61,13 @@
                     link.href = canvas.toDataURL("image/jpeg");
                     link.click();
                 });
+                
             });
-
+            $("#cnty").on("change", function(){
+                if ($("#cnty").val() == "") {
+                    $("#stateDropdown").prop("disabled", true);
+                }
+            });
         });
     </script>
 
