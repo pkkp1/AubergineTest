@@ -37,7 +37,7 @@
             $("#stateDropdown").on("change", function () {
                 const province = $(this).val();
                 const country = $("#cnty").val();
-                $.getJSON(`https://universities.hipolabs.com/search?country=${country}`, function (
+                $.getJSON("http://universities.hipolabs.com/search?country=" + $("#cnty").val(), function (
                     data) {
                     const filteredData = data.filter(univ => univ["state-province"] ===
                         province);
